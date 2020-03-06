@@ -1,0 +1,4 @@
+steps:
+- name: gcr.io/cloud-builders/gsutil
+  entrypoint: gcloud
+  args: ['--quiet', 'functions', 'deploy', 'gcbSubscribeSlack', '--trigger-topic', 'cloud-builds', '--runtime', 'nodejs10', '--set-env-vars', '"SLACK_WEBHOOK_URL=$_SLACK_WEBHOOK_URL"]
