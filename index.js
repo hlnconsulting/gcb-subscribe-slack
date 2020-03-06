@@ -15,6 +15,14 @@ module.exports.gcbSubscribeSlack = (pubSubEvent, context) => {
     if (status.indexOf(build.status) === -1) {
         return;
     }
+    if (typeof build.sourceProvenance === 'undefined'
+        || typeof build.sourceProvenance.resolvedRepoSource === 'undefined'
+        || typeof build.sourceProvenance.resolvedRepoSource.repoName === 'undefined'
+        || typeof build.source === 'undefined'
+        || typeof build.source.repoSource == 'undefined') {
+        console.warn(`build object didn't pass validation: ${JSON.stringify(build)}`);
+        return;
+    }
 
     // Send message to Slack.
     const message = createSlackMessage(build);
@@ -28,14 +36,16 @@ const eventToBuild = (data) => {
 
 // createSlackMessage creates a message from a build object.
 const createSlackMessage = (build) => {
+
+    const text = `Build for \`${build.sourceProvenance.resolvedRepoSource.repoName.replace(/_/g, '/')}\` \
+branch \`${build.source.repoSource.branchName}\` \
+commit \`${build.sourceProvenance.resolvedRepoSource.commitSha}\` \
+completed.\n\
+Started: \`${build.startTime}\`\n\
+Finished: \`${build.finishTime}\``;
+
     const message = {
-        //         text: `Build for \`${build.sourceProvenance.resolvedRepoSource.repoName.replace(/_/g, '/')}\` \
-        // branch \`${build.source.repoSource.branchName}\` \
-        // commit \`${build.sourceProvenance.resolvedRepoSource.commitSha}\` \
-        // completed.\n\
-        // Started: \`${build.startTime}\`\n\
-        // Finished: \`${build.finishTime}\``,
-        text: `Build for \`${build}\``,
+        text: text,
         mrkdwn: true,
         attachments: [
             {
