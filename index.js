@@ -15,11 +15,16 @@ module.exports.gcbSubscribeSlack = (pubSubEvent, context) => {
     if (status.indexOf(build.status) === -1) {
         return;
     }
-    if (typeof build.sourceProvenance === 'undefined'
-        || typeof build.sourceProvenance.resolvedRepoSource === 'undefined'
-        || typeof build.sourceProvenance.resolvedRepoSource.repoName === 'undefined'
-        || typeof build.source === 'undefined'
-        || typeof build.source.repoSource == 'undefined') {
+    if (
+        (typeof build.substitutions === 'undefined'
+            || typeof build.substitutions.REPO_NAME === 'undefined')
+        && (typeof build.sourceProvenance === 'undefined'
+            || typeof build.sourceProvenance.resolvedRepoSource === 'undefined'
+            || typeof build.sourceProvenance.resolvedRepoSource.repoName === 'undefined')
+        &&
+        (typeof build.source === 'undefined'
+            || typeof build.source.repoSource == 'undefined')
+    ) {
         console.warn(`build object didn't pass validation: ${JSON.stringify(build)}`);
         return;
     }
@@ -37,12 +42,23 @@ const eventToBuild = (data) => {
 // createSlackMessage creates a message from a build object.
 const createSlackMessage = (build) => {
 
-    const text = `Build for \`${build.sourceProvenance.resolvedRepoSource.repoName.replace(/_/g, '/')}\` \
+    let text;
+    if (typeof build.substitutions !== 'undefined'
+        && typeof build.substitutions.REPO_NAME !== 'undefined') {
+        text = `Build for \`${build.substitutions.REPO_NAME}\` \
+branch \`${build.substitutions.BRANCH_NAME}\` \
+commit \`${build.substitutions.COMMIT_SHA}\` \
+completed.\n\
+Started: \`${build.startTime}\`\n\
+Finished: \`${build.finishTime}\``;
+    } else {
+        text = `Build for \`${build.sourceProvenance.resolvedRepoSource.repoName.replace(/_/g, '/')}\` \
 branch \`${build.source.repoSource.branchName}\` \
 commit \`${build.sourceProvenance.resolvedRepoSource.commitSha}\` \
 completed.\n\
 Started: \`${build.startTime}\`\n\
 Finished: \`${build.finishTime}\``;
+    }
 
     const message = {
         text: text,
