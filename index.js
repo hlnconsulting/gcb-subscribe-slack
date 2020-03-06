@@ -45,13 +45,15 @@ const createSlackMessage = (build) => {
     let text;
     if (typeof build.substitutions !== 'undefined'
         && typeof build.substitutions.REPO_NAME !== 'undefined') {
-        text = `Build for \`${build.substitutions.REPO_NAME}\` \
+        // this is the Cloud Build GitHub App build format
+        text = `Build for \`github/${projectId}/${build.substitutions.REPO_NAME}\` \
 branch \`${build.substitutions.BRANCH_NAME}\` \
 commit \`${build.substitutions.COMMIT_SHA}\` \
 completed.\n\
 Started: \`${build.startTime}\`\n\
 Finished: \`${build.finishTime}\``;
     } else {
+        // this is the traditional sync repo build format
         text = `Build for \`${build.sourceProvenance.resolvedRepoSource.repoName.replace(/_/g, '/')}\` \
 branch \`${build.source.repoSource.branchName}\` \
 commit \`${build.sourceProvenance.resolvedRepoSource.commitSha}\` \
