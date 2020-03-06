@@ -29,12 +29,13 @@ const eventToBuild = (data) => {
 // createSlackMessage creates a message from a build object.
 const createSlackMessage = (build) => {
     const message = {
-        text: `Build for \`${build.sourceProvenance.resolvedRepoSource.repoName.replace(/_/g, '/')}\` \
-branch \`${build.source.repoSource.branchName}\` \
-commit \`${build.sourceProvenance.resolvedRepoSource.commitSha}\` \
-completed.\n\
-Started: \`${build.startTime}\`\n\
-Finished: \`${build.finishTime}\``,
+        //         text: `Build for \`${build.sourceProvenance.resolvedRepoSource.repoName.replace(/_/g, '/')}\` \
+        // branch \`${build.source.repoSource.branchName}\` \
+        // commit \`${build.sourceProvenance.resolvedRepoSource.commitSha}\` \
+        // completed.\n\
+        // Started: \`${build.startTime}\`\n\
+        // Finished: \`${build.finishTime}\``,
+        text: `Build for \`${build}\``,
         mrkdwn: true,
         attachments: [
             {
