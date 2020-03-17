@@ -42,11 +42,13 @@ const eventToBuild = (data) => {
 // createSlackMessage creates a message from a build object.
 const createSlackMessage = (build) => {
 
+    console.debug(`build object: ${JSON.stringify(build)}`);
+
     let text;
     if (typeof build.substitutions !== 'undefined'
         && typeof build.substitutions.REPO_NAME !== 'undefined') {
         // this is the Cloud Build GitHub App build format
-        text = `Build for \`github/${projectId}/${build.substitutions.REPO_NAME}\` \
+        text = `Build for \`github/${build.substitutions.REPO_NAME}\` \
 branch \`${build.substitutions.BRANCH_NAME}\` \
 commit \`${build.substitutions.COMMIT_SHA}\` \
 completed.\n\

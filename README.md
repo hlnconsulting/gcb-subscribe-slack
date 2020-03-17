@@ -1,1 +1,1 @@
-gcb-subscribe-slack
+gcloud functions deploy gcbSubscribeSlack --trigger-topic cloud-builds --runtime nodejs10 --set-env-vars "SLACK_WEBHOOK_URL=..."
